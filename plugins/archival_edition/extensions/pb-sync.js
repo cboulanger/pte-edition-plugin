@@ -18,6 +18,7 @@ export default class ArchivalPbSyncExtension extends FrontendExtensionPlugin {
   /** @param {PluginContext} context */
   constructor(context) {
     super(context, { name: 'archival-edition-pb-sync' });
+    console.log('DEBUG archival-edition-pb-sync: extension instantiated'); // DEBUG
   }
 
   /**
@@ -30,6 +31,7 @@ export default class ArchivalPbSyncExtension extends FrontendExtensionPlugin {
    */
   ['pdfSearch.fallback'](node, { pageCount }) {
     const page = ArchivalPbSyncExtension.pageForNode(node, pageCount);
+    console.log('DEBUG archival-edition-pb-sync: pdfSearch.fallback', node?.nodeName, { pageCount, page }); // DEBUG
     return page ? { page } : null;
   }
 
@@ -47,6 +49,7 @@ export default class ArchivalPbSyncExtension extends FrontendExtensionPlugin {
     if (!doc) return null;
     const labels = Array.from(doc.getElementsByTagNameNS(TEI_NS, 'label'));
     const label = (/** @type {string} */ type) => labels.find(l => l.getAttribute('type') === type)?.textContent?.trim();
+    console.log('DEBUG archival-edition-pb-sync: labels', { variantId: label('variant-id'), formPages: label('form-pages'), pbs: doc.getElementsByTagNameNS(TEI_NS, 'pb').length }); // DEBUG
     if (label('variant-id') !== VARIANT_ID) return null;
     const formPages = parseInt(label('form-pages') ?? '', 10);
     if (!Number.isInteger(formPages)) return null;
